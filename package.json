@@ -1,13 +1,8 @@
 {
-  "name": "latentfolio",
+  "name": "ai-systems-portfolio",
   "version": "1.0.0",
   "private": true,
-  "description": "Free evidence-first Astro portfolio template for AI, ML, and GenAI engineers.",
-  "author": {
-    "name": "Dharani Eswaramurthi",
-    "url": "https://github.com/Dharani-Eswaramurthi"
-  },
-  "license": "MIT",
+  "description": "High-performance evidence-first portfolio for AI, ML, and Systems engineers.",
   "type": "module",
   "engines": {
     "node": ">=22.12.0"

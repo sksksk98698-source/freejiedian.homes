@@ -37,8 +37,8 @@
     --radius-sm: 16px;
     --shadow: 0 22px 70px rgba(38, 26, 23, 0.11);
     --shell: min(1220px, calc(100vw - 56px));
-    --font-sans: "Instrument Sans Variable", "Segoe UI", sans-serif;
-    --font-serif: "Newsreader Variable", Georgia, serif;
+    --font-sans: "Instrument Sans Variable", -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+    --font-serif: "Newsreader Variable", "Source Han Serif CN", "Noto Serif SC", "Songti SC", SimSun, serif;
     --font-mono: "SFMono-Regular", "Cascadia Code", Consolas, monospace;
     color-scheme: light;
   }
@@ -705,7 +705,7 @@
   .writing-note { display: flex; flex-direction: column; align-items: flex-start; }
   .partner-badge { display: inline-flex; align-items: center; gap: 7px; margin-bottom: 18px; padding: 7px 11px; color: var(--inverse-ink); background: var(--inverse-surface); border-radius: 999px; font-size: .62rem; font-weight: 750; }
   .article-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 18px; }
-  .article-card { position: relative; display: grid; grid-template-columns: .72fr 1.28fr; min-height: 345px; border: 1px solid var(--line); border-radius: 22px; background: var(--paper-light); overflow: hidden; transition: transform 220ms ease, box-shadow 220ms ease; }
+  .article-card { position: relative; display: flex; flex-direction: column; min-height: 280px; border: 1px solid var(--line); border-radius: 22px; background: var(--paper-light); overflow: hidden; transition: transform 220ms ease, box-shadow 220ms ease; }
   .article-card:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
   .article-card > a { position: absolute; z-index: 3; inset: 0; }
   .article-art { position: relative; min-height: 100%; overflow: hidden; }
@@ -721,9 +721,9 @@
   .article-2 .article-art > i, .article-2 .article-art > b { font-family: var(--font-serif); }
   .article-copy { display: flex; flex-direction: column; padding: 28px; }
   .article-meta { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: .54rem; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
-  .article-copy h3 { margin-top: 32px; font-family: var(--font-serif); font-size: clamp(1.6rem, 2.35vw, 2.55rem); font-weight: 560; line-height: 1.03; letter-spacing: -.035em; }
-  .article-copy > p { margin-top: 16px; color: var(--muted); font-size: .71rem; line-height: 1.6; }
-  .article-bottom { display: flex; justify-content: space-between; gap: 12px; margin-top: auto; padding-top: 20px; color: var(--muted); font-size: .58rem; }
+  .article-copy h3 { margin-top: 14px; font-family: var(--font-sans); font-size: 1.35rem; font-weight: 700; line-height: 1.45; letter-spacing: 0; }
+  .article-copy > p { margin-top: 12px; color: var(--muted); font-size: .88rem; line-height: 1.65; }
+  .article-bottom { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: auto; padding-top: 20px; color: var(--muted); font-size: .78rem; flex-wrap: wrap; }
   .article-bottom span:last-child { display: flex; align-items: center; gap: 5px; color: var(--ink); font-weight: 750; }
   .all-writing-card { min-height: 190px; grid-column: 1/-1; display: flex; align-items: flex-end; justify-content: space-between; gap: 30px; padding: 34px; color: var(--inverse-ink); background: var(--inverse-surface); border-radius: 22px; }
   .all-writing-card > span { max-width: 450px; font-family: var(--font-serif); font-size: 2.1rem; line-height: 1.06; }

@@ -1,16 +1,16 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import DemoPromotion from '../components/DemoPromotion.astro';
 import '@fontsource-variable/instrument-sans/wght.css';
 import '@fontsource-variable/newsreader/wght.css';
 import '@fontsource-variable/newsreader/wght-italic.css';
 import '../styles/global.css';
-import { profile, socialLinks } from '../data/site';
+import { siteBrand } from '../data/airports';
 
 interface Props {
   title?: string;
   description?: string;
+  keywords?: string;
   image?: string;
   imageAlt?: string;
   type?: 'website' | 'article';
@@ -19,75 +19,65 @@ interface Props {
 }
 
 const {
-  title = `${profile.name} — ${profile.role}`,
-  description = profile.bio,
+  title = `${siteBrand.name} — ${siteBrand.slogan}`,
+  description = siteBrand.description,
+  keywords = siteBrand.keywords,
   image = '/og-cover.png',
-  imageAlt = `${profile.name}, ${profile.role} — portfolio preview`,
+  imageAlt = `${siteBrand.name} - 2026 机场推荐与测速实测报告`,
   type = 'website',
   noindex = false,
   schema,
 } = Astro.props;
 
-const canonical = new URL(Astro.url.pathname, Astro.site);
-const imageUrl = new URL(image, Astro.site);
-const siteUrl = new URL('/', Astro.site).toString();
-const personId = new URL('/#person', Astro.site).toString();
-const personSchema = {
-  '@type': 'Person',
-  '@id': personId,
-  name: profile.name,
-  jobTitle: profile.role,
-  description: profile.bio,
-  url: siteUrl,
-  image: new URL(profile.portrait, Astro.site).toString(),
-  email: `mailto:${profile.email}`,
-  sameAs: socialLinks.map((item) => item.href),
-  knowsAbout: ['Generative AI', 'Retrieval-augmented generation', 'Agentic AI', 'Machine learning systems', 'MLOps', 'AI product engineering'],
-  homeLocation: {
-    '@type': 'Place',
-    name: profile.location,
-  },
-};
+const canonical = new URL(Astro.url.pathname, Astro.site || siteBrand.url);
+const imageUrl = new URL(image, Astro.site || siteBrand.url);
+const siteUrl = new URL('/', Astro.site || siteBrand.url).toString();
+
 const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  '@id': new URL('/#website', Astro.site).toString(),
-  name: `${profile.name} — Portfolio`,
+  '@id': `${siteUrl}#website`,
+  name: siteBrand.name,
+  alternateName: siteBrand.enName,
   url: siteUrl,
-  description: profile.bio,
-  inLanguage: 'en',
-  author: { '@id': personId },
+  description: siteBrand.description,
+  inLanguage: 'zh-CN',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: `${siteUrl}airports?q={search_term_string}`,
+    'query-input': 'required name=search_term_string'
+  }
 };
-const profilePageSchema = {
+
+const organizationSchema = {
   '@context': 'https://schema.org',
-  '@type': 'ProfilePage',
-  '@id': new URL('/#profile-page', Astro.site).toString(),
-  name: title,
-  description,
+  '@type': 'Organization',
+  '@id': `${siteUrl}#organization`,
+  name: siteBrand.name,
   url: siteUrl,
-  mainEntity: personSchema,
+  logo: new URL('/favicon.svg', Astro.site || siteBrand.url).toString(),
+  description: siteBrand.description
 };
+
 const pageSchema = schema ? (Array.isArray(schema) ? schema : [schema]) : [];
 const jsonLd = noindex
   ? []
   : [
       websiteSchema,
-      Astro.url.pathname === '/'
-        ? profilePageSchema
-        : { '@context': 'https://schema.org', ...personSchema },
+      organizationSchema,
       ...pageSchema,
     ];
 ---
 
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="zh-CN" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script is:inline>
       document.documentElement.classList.add('has-js');
       try {
-        const savedTheme = localStorage.getItem('latentfolio-theme');
+        const savedTheme = localStorage.getItem('site-theme');
         const systemTheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         document.documentElement.dataset.theme = savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : systemTheme;
       } catch {
@@ -97,7 +87,8 @@ const jsonLd = noindex
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="author" content={profile.name} />
+    <meta name="keywords" content={keywords} />
+    <meta name="author" content={siteBrand.name} />
     <meta name="theme-color" content="#f5f0e8" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#111016" media="(prefers-color-scheme: dark)" />
     <meta name="color-scheme" content="light dark" />
@@ -105,11 +96,18 @@ const jsonLd = noindex
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="manifest" href="/site.webmanifest" />
-    <link rel="alternate" type="application/pdf" href={profile.resume} title={`${profile.name} resume`} />
     <meta name="robots" content={noindex ? 'noindex,nofollow' : 'index,follow,max-image-preview:large'} />
 
+    <!-- 站长搜索引擎验证预留插槽 (GSC / Bing / 神马 / 百度) -->
+    <slot name="search-engine-verification">
+      <!-- 填入您的 Google 验证码: <meta name="google-site-verification" content="..." /> -->
+      <!-- 填入您的 Bing 验证码: <meta name="msvalidate.01" content="..." /> -->
+      <!-- 填入您的神马搜索验证码: <meta name="shenma-site-verification" content="..." /> -->
+      <!-- 填入您的百度搜索验证码: <meta name="baidu-site-verification" content="..." /> -->
+    </slot>
+
     <meta property="og:type" content={type} />
-    <meta property="og:site_name" content={`${profile.name} — Portfolio`} />
+    <meta property="og:site_name" content={siteBrand.name} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
@@ -119,7 +117,7 @@ const jsonLd = noindex
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={imageAlt} />
-    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale" content="zh_CN" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
@@ -129,10 +127,9 @@ const jsonLd = noindex
     {jsonLd.map((entry) => <script is:inline type="application/ld+json" set:html={JSON.stringify(entry)} />)}
   </head>
   <body id="top">
-    <a class="skip-link" href="#main-content">Skip to content</a>
+    <a class="skip-link" href="#main-content">跳转至正文</a>
     <div class="page-noise" aria-hidden="true"></div>
     <Header />
-    <DemoPromotion />
     <main id="main-content" tabindex="-1">
       <slot />
     </main>

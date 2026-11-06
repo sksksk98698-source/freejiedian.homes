@@ -1,0 +1,667 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import { topicArticlesData, type TopicArticle } from '../../data/topics';
+import { siteBrand } from '../../data/airports';
+
+export function getStaticPaths() {
+  return topicArticlesData.map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
+  }));
+}
+
+interface Props {
+  article: TopicArticle;
+}
+
+const { article } = Astro.props;
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: article.title,
+  description: article.description,
+  author: {
+    '@type': 'Organization',
+    name: article.author,
+    url: siteBrand.url,
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: siteBrand.name,
+    url: siteBrand.url,
+    logo: {
+      '@type': 'ImageObject',
+      url: `${siteBrand.url}/favicon.svg`
+    }
+  },
+  datePublished: article.datePublished,
+  dateModified: article.dateModified,
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': `${siteBrand.url}/topics/${article.slug}`
+  }
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: article.faq.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: f.a
+    }
+  }))
+};
+---
+
+<BaseLayout
+  title={`${article.seoTitle} — ${siteBrand.name}`}
+  description={article.description}
+  keywords={article.primaryKeyword}
+  schema={[articleSchema, faqSchema]}
+>
+  <div class="shell article-page-wrap" data-reveal>
+    <!-- 面包屑导航 -->
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <a href="/">首页</a> &gt; <a href="/topics">专题研报</a> &gt; <span>{article.title}</span>
+    </nav>
+
+    <!-- 文章大头部 -->
+    <header class="article-hero-header">
+      <div class="article-meta-eyebrow">
+        <span class="eyebrow-pill">{article.eyebrow}</span>
+        <span class="meta-item"><Icon name="network" size={14} /> {article.role}</span>
+        <span class="meta-item">⏱ {article.readingTime}</span>
+        <span class="meta-item">📅 更新：{article.dateModified}</span>
+      </div>
+
+      <h1 class="article-main-title">{article.title}</h1>
+      <p class="article-lead-desc">{article.description}</p>
+
+      <!-- 核心推荐品牌条 -->
+      <div class="article-recommended-strip">
+        <span class="strip-label">🎯 本文深度测评推荐品牌：</span>
+        <div class="strip-tags">
+          {article.recommendedBrands.map((brand) => (
+            <a href={`/airports/${brand.slug}`} class="brand-link-chip">
+              <strong>{brand.name}</strong>
+              <small>{brand.highlight}</small>
+            </a>
+          ))}
+        </div>
+      </div>
+    </header>
+
+    <!-- 主体双栏架构 (左侧正文 + 右侧目录与内链导航) -->
+    <div class="article-layout-grid">
+      <!-- 正文容器 -->
+      <article class="article-content-container">
+        <!-- 高信息密度 Answer Block (AI / GEO 抽取利器) -->
+        <section class="answer-block-card">
+          <div class="answer-block-badge">
+            <span class="icon-spark">⚡</span>
+            <strong>核心即问即答 (Quick Take / Answer Block)</strong>
+          </div>
+          <h2 class="answer-question">Q: {article.answerBlock.question}</h2>
+          <p class="answer-text"><strong>A: </strong>{article.answerBlock.answer}</p>
+        </section>
+
+        <!-- 详细正文段落 -->
+        {article.contentSections.map((sec) => (
+          <section class="content-section-block" id={sec.id}>
+            <h2>{sec.heading}</h2>
+            {sec.paragraphs.map((p) => (
+              <p class="prose-p" set:html={p.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="context-link">$1</a>')} />
+            ))}
+
+            {sec.callout && (
+              <div class="article-callout-box">
+                <h4>{sec.callout.title}</h4>
+                <p set:html={sec.callout.text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="context-link">$1</a>')} />
+              </div>
+            )}
+
+            {sec.codeBlock && (
+              <div class="article-code-box">
+                <div class="code-box-header">
+                  <span>{sec.codeBlock.title}</span>
+                  <small>{sec.codeBlock.lang.toUpperCase()}</small>
+                </div>
+                <pre><code>{sec.codeBlock.code}</code></pre>
+              </div>
+            )}
+          </section>
+        ))}
+
+        <!-- 核心常见问题 (FAQ) -->
+        <section class="content-section-block faq-section" id="sec-faq">
+          <h2>常见高频疑难深度解答 (FAQ)</h2>
+          <div class="faq-accordion-list">
+            {article.faq.map((f, i) => (
+              <div class="faq-item-card">
+                <h3>
+                  <span class="q-badge">Q{i + 1}</span>
+                  {f.q}
+                </h3>
+                <p class="faq-answer-p">
+                  <strong>解答：</strong>
+                  <span set:html={f.a.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="context-link">$1</a>')} />
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <!-- 四层站内链接体系 (闭环内链网络) -->
+        <section class="internal-links-hub-card">
+          <div class="hub-header">
+            <h3>🔗 站内延伸学习与决策拓扑网络</h3>
+            <p>基于当前主题知识树建立的推荐导航路径：</p>
+          </div>
+
+          <div class="hub-grid">
+            <div class="hub-col">
+              <h4>▲ 向上归属支柱</h4>
+              <a href={article.internalLinks.parent.url} class="hub-link-item">
+                <Icon name="arrow-right" size={14} />
+                <span>{article.internalLinks.parent.title}</span>
+              </a>
+            </div>
+
+            <div class="hub-col">
+              <h4>◄► 横向相关专题</h4>
+              {article.internalLinks.siblings.map((sib) => (
+                <a href={sib.url} class="hub-link-item">
+                  <Icon name="arrow-right" size={14} />
+                  <span>{sib.title}</span>
+                </a>
+              ))}
+            </div>
+
+            <div class="hub-col">
+              <h4>▼ 向下实战指引</h4>
+              {article.internalLinks.children.map((child) => (
+                <a href={child.url} class="hub-link-item">
+                  <Icon name="arrow-up-right" size={14} />
+                  <span>{child.title}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <!-- 合规声明 -->
+        <div class="article-compliance-footer">
+          <small>
+            ⚖️ 编者说明：本文由免费节点评测技术团队基于真实网络抓包与测速标本独立撰写。文中涉及的推荐品牌包含商业推广链接（rel="nofollow sponsored noopener"），旨在支持本站日常测试服务器的运维开销，绝不影响评测的客观性与用户实际订阅价格。
+          </small>
+        </div>
+      </article>
+
+      <!-- 右侧侧边栏 (TOC 目录树 + 快速购买 + 测速直达) -->
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky-panel">
+          <!-- 目录大纲 (TOC) -->
+          <div class="sidebar-box toc-box">
+            <h4>📑 本文快速导读目录</h4>
+            <nav class="toc-nav">
+              {article.toc.map((item) => (
+                <a href={`#${item.id}`} class="toc-link">
+                  {item.title}
+                </a>
+              ))}
+              <a href="#sec-faq" class="toc-link">常见高频疑难 (FAQ)</a>
+            </nav>
+          </div>
+
+          <!-- 第一主推光速云快捷转化 -->
+          <div class="sidebar-box spotlight-promo-box">
+            <div class="promo-badge">🥇 2026 第一主推</div>
+            <h4>光速云 · IEPL企业专线</h4>
+            <p>年付折算仅 <strong>8 元/月</strong>，特有 147 永久套餐，全绿原生解锁 ChatGPT / Netflix 4K。</p>
+            <div class="promo-coupon">优惠码：<code>AMM</code></div>
+            <a
+              class="button button-primary btn-block"
+              href="https://sahude.gsyvipaff.com/#/?code=keqgvT5Y"
+              target="_blank"
+              rel="nofollow sponsored noopener"
+            >
+              前往光速云官网特惠
+              <Icon name="arrow-up-right" size={14} />
+            </a>
+          </div>
+
+          <!-- 测速实验室与客户端入口 -->
+          <div class="sidebar-box quick-links-box">
+            <h4>实用工具直达</h4>
+            <ul class="sidebar-quick-list">
+              <li><a href="/speedtest"><Icon name="network" size={14} /> 17家晚高峰真实测速大图</a></li>
+              <li><a href="/airports"><Icon name="arrow-right" size={14} /> 42家机场品牌全参数比对</a></li>
+              <li><a href="/clients"><Icon name="download" size={14} /> 全平台代理客户端官方下载</a></li>
+            </ul>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .article-page-wrap {
+    padding-top: 2.5rem;
+    padding-bottom: 5rem;
+  }
+  .breadcrumb-nav {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .breadcrumb-nav a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .breadcrumb-nav a:hover {
+    color: #7157ff;
+  }
+
+  /* 头部 Hero 区域 */
+  .article-hero-header {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 2.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .article-meta-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+  .eyebrow-pill {
+    background: rgba(113, 87, 255, 0.12);
+    color: #7157ff;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-weight: 700;
+  }
+  .meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .article-main-title {
+    font-size: 2.35rem;
+    line-height: 1.3;
+    margin: 0 0 16px 0;
+    color: var(--ink);
+  }
+  .article-lead-desc {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--muted);
+    max-width: 880px;
+    margin-bottom: 24px;
+  }
+  .article-recommended-strip {
+    background: var(--paper-light);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .strip-label {
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .strip-tags {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+  }
+  .brand-link-chip {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    padding: 8px 12px;
+    border-radius: 10px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    transition: all 0.2s ease;
+  }
+  .brand-link-chip:hover {
+    border-color: #7157ff;
+    transform: translateY(-2px);
+  }
+  .brand-link-chip strong {
+    color: #7157ff;
+    font-size: 0.9rem;
+  }
+  .brand-link-chip small {
+    color: var(--muted);
+    font-size: 0.72rem;
+  }
+
+  /* 主体双栏 */
+  .article-layout-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 2.5rem;
+    align-items: flex-start;
+  }
+  .article-content-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  /* Answer Block (AI 答案块) */
+  .answer-block-card {
+    background: linear-gradient(135deg, rgba(113, 87, 255, 0.08) 0%, rgba(116, 226, 208, 0.06) 100%);
+    border: 2px solid rgba(113, 87, 255, 0.3);
+    border-radius: 20px;
+    padding: 24px;
+  }
+  .answer-block-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #7157ff;
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+  }
+  .icon-spark {
+    font-size: 1.1rem;
+  }
+  .answer-question {
+    font-size: 1.25rem;
+    line-height: 1.4;
+    margin: 0 0 10px 0;
+    color: var(--ink);
+  }
+  .answer-text {
+    font-size: 0.96rem;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  /* 章节正文 */
+  .content-section-block {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 2.5rem;
+  }
+  .content-section-block h2 {
+    font-size: 1.65rem;
+    line-height: 1.35;
+    margin: 0 0 1.25rem 0;
+    color: var(--ink);
+  }
+  .prose-p {
+    font-size: 0.98rem;
+    line-height: 1.8;
+    color: var(--ink-soft);
+    margin-bottom: 1.2rem;
+  }
+  .prose-p:last-of-type {
+    margin-bottom: 0;
+  }
+  :global(.context-link) {
+    color: #7157ff;
+    text-decoration: underline;
+    font-weight: 600;
+  }
+  :global(.context-link:hover) {
+    color: #846efd;
+  }
+
+  .article-callout-box {
+    background: var(--paper-light);
+    border-left: 4px solid #7157ff;
+    border-radius: 0 14px 14px 0;
+    padding: 18px 20px;
+    margin-top: 1.5rem;
+  }
+  .article-callout-box h4 {
+    margin: 0 0 8px 0;
+    font-size: 1rem;
+    color: var(--ink);
+  }
+  .article-callout-box p {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.65;
+    color: var(--muted);
+  }
+
+  .article-code-box {
+    background: #111016;
+    border-radius: 14px;
+    overflow: hidden;
+    margin-top: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .code-box-header {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: #85808c;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .article-code-box pre {
+    margin: 0;
+    padding: 18px;
+    overflow-x: auto;
+    color: #f5f0e8;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+
+  /* FAQ 列表 */
+  .faq-accordion-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 1rem;
+  }
+  .faq-item-card {
+    background: var(--paper-light);
+    border-radius: 14px;
+    padding: 18px 22px;
+    border: 1px solid var(--line);
+  }
+  .faq-item-card h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .q-badge {
+    background: #7157ff;
+    color: #fff;
+    font-size: 0.72rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+  }
+  .faq-answer-p {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  /* 四层内链拓扑中心 */
+  .internal-links-hub-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 2rem;
+  }
+  .hub-header h3 {
+    margin: 0 0 6px 0;
+    font-size: 1.3rem;
+  }
+  .hub-header p {
+    margin: 0 0 1.5rem 0;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+  .hub-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .hub-col h4 {
+    margin: 0 0 12px 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 6px;
+  }
+  .hub-link-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.88rem;
+    color: var(--ink);
+    text-decoration: none;
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+  .hub-link-item:hover {
+    color: #7157ff;
+  }
+
+  .article-compliance-footer {
+    padding: 16px 20px;
+    background: var(--paper-light);
+    border-radius: 12px;
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.6;
+  }
+
+  /* 侧边栏 */
+  .sidebar-sticky-panel {
+    position: sticky;
+    top: 96px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .sidebar-box {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 20px;
+  }
+  .toc-box h4, .quick-links-box h4 {
+    margin: 0 0 12px 0;
+    font-size: 0.95rem;
+  }
+  .toc-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .toc-link {
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-decoration: none;
+    line-height: 1.4;
+    transition: color 0.2s ease;
+  }
+  .toc-link:hover {
+    color: #7157ff;
+    padding-left: 4px;
+  }
+
+  /* 侧栏主推卡 */
+  .spotlight-promo-box {
+    background: linear-gradient(135deg, rgba(113, 87, 255, 0.08) 0%, rgba(116, 226, 208, 0.06) 100%);
+    border-color: rgba(113, 87, 255, 0.3);
+  }
+  .promo-badge {
+    background: #f5c84c;
+    color: #111016;
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+  .spotlight-promo-box h4 {
+    margin: 0 0 6px 0;
+    font-size: 1.15rem;
+  }
+  .spotlight-promo-box p {
+    font-size: 0.84rem;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+  .promo-coupon {
+    font-size: 0.82rem;
+    margin-bottom: 14px;
+  }
+  .promo-coupon code {
+    background: rgba(113, 87, 255, 0.15);
+    color: #7157ff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 800;
+  }
+  .btn-block {
+    width: 100%;
+    justify-content: center;
+  }
+  .sidebar-quick-list {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .sidebar-quick-list a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.84rem;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .sidebar-quick-list a:hover {
+    color: #7157ff;
+  }
+
+  @media (max-width: 900px) {
+    .article-layout-grid {
+      grid-template-columns: 1fr;
+    }
+    .hub-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

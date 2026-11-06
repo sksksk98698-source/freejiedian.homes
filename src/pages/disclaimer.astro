@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { siteBrand } from '../data/airports';
+
+const disclaimerSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: '法律合规与免责声明 — 免费节点',
+  description: '免费节点 (freejiedian.homes) 网站使用条款、免责声明与出海网络合规指引。',
+  url: 'https://freejiedian.homes/disclaimer'
+};
+---
+
+<BaseLayout
+  title={`法律免责声明与服务条款 — ${siteBrand.name}`}
+  description="免费节点 (freejiedian.homes) 官方免责声明、网络安全合规指引与第三方商业外链透明度告知。"
+  schema={disclaimerSchema}
+>
+  <div class="shell page-header-box" data-reveal>
+    <div class="eyebrow-row">
+      <span class="eyebrow"><i></i> 合规政策与法律边界</span>
+      <span class="hero-location">学术科研 · 跨国跨境技术交流 · 纯技术中立</span>
+    </div>
+    <h1>法律免责声明<br /><em>网络合规与服务条款.</em></h1>
+    <p class="header-lead">
+      在浏览或使用本站整理的技术评测、开源客户端及外部网络资讯前，请务必仔细阅读以下合规声明。
+    </p>
+  </div>
+
+  <div class="shell" style="padding-bottom: 5rem; max-width: 900px; margin: 0 auto;">
+    <section class="content-block" data-reveal>
+      <h2>一、学术研究与技术中立声明</h2>
+      <p>
+        本站收录的所有网络协议、开源代理客户端软件（如 Clash Verge Rev、v2rayN）以及网络加速技术，仅供计算机网络教学、学术科研文献查阅、合规跨境电商业务与开源代码协作研究使用。
+      </p>
+      <p>
+        任何访问者必须严格遵守其所在国家及地区的法律法规，严禁利用本站整理的技术工具从事任何危害国家安全、侵犯他人隐私或违反电信管理条例的违法活动。因使用者自身违法使用造成的法律后果，本站不承担任何连带责任。
+      </p>
+    </section>
+
+    <section class="content-block" data-reveal style="margin-top: 2.5rem;">
+      <h2>二、第三方商业链接 (Affiliate) 透明度披露</h2>
+      <p>
+        按照全球搜索引擎（Google、Bing）合规要求以及广告透明度规范，本站郑重披露：
+      </p>
+      <p>
+        本站部分指向第三方服务商（如光速云、暮光加速等 42 家机场）的官网链接可能含有推广邀请标识（Affiliate / Referral）。当您通过此类链接注册或购买套餐时，本站可能会获得少许服务器维护补贴，但<strong>这绝不会增加您的实际支付成本</strong>（部分链接还会附带专属折扣优惠码）。
+      </p>
+      <p>
+        本站对第三方商家的资金安全、套餐履约及服务可用性提供客观评价，但不作为合同担保方。选购前请遵循本站倡导的「先月付试水、不囤积长期套餐」资金安全纪律。
+      </p>
+    </section>
+
+    <section class="content-block" data-reveal style="margin-top: 2.5rem;">
+      <h2>三、版权与内容原创性保护</h2>
+      <p>
+        本站所有万字级技术专题研报、晚高峰测速截图、解锁图谱及数据架构均为 <strong>freejiedian.homes</strong> 原创整理。未经书面授权许可，严禁任何形式的爬虫全量搬运、内容农场洗稿或二次商业打包分发。
+      </p>
+    </section>
+  </div>
+</BaseLayout>

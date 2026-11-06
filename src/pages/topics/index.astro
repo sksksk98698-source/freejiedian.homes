@@ -1,0 +1,220 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import { topicArticlesData, type TopicArticle } from '../../data/topics';
+import { siteBrand } from '../../data/airports';
+
+const topicsHubSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: '出海网络选购与技术决策专题研报矩阵',
+  description: '汇集针对平价高性价比机场选购、ChatGPT与4K流媒体解锁、IEPL/IPLC纯内网专线的万字级深度技术研报与排查指南。',
+  url: 'https://freejiedian.homes/topics'
+};
+---
+
+<BaseLayout
+  title={`出海网络选购专题研报矩阵 — 避坑与技术实测【${siteBrand.name}】`}
+  description="深度解答平价高性价比机场选择、ChatGPT与Netflix原生解锁机制、IEPL/IPLC纯专线对比等高频疑问，万字级长文透视网络底层原理。"
+  schema={topicsHubSchema}
+>
+  <div class="shell page-header-box" data-reveal>
+    <div class="eyebrow-row">
+      <span class="eyebrow"><i></i> 搜索引擎与决策矩阵 (SEO / GEO 深度研报)</span>
+      <span class="hero-location">硬核原理 · 场景化推荐 · 深度避坑</span>
+    </div>
+    <h1>出海网络选购专题<br /><em>避坑决策深度研报矩阵.</em></h1>
+    <p class="header-lead">
+      面对市面上纷繁复杂的机场术语（IPLC、BGP、中转、直连、流媒体解锁），我们基于真实网络抓包与测速标本，拆解技术原理与工程架构，为不同预算与使用场景提供清晰的选购指引。
+    </p>
+  </div>
+
+  <div class="shell" style="padding-bottom: 5rem;">
+    <div class="topics-container">
+      {topicArticlesData.map((article: TopicArticle, idx: number) => (
+        <article class="topic-detail-card" id={article.slug} data-reveal>
+          <div class="topic-header">
+            <div class="topic-meta-strip">
+              <span class="topic-idx">专题 0{idx + 1} · {article.eyebrow}</span>
+              <span class="role-badge">{article.role}</span>
+              <span class="read-badge">{article.readingTime}</span>
+            </div>
+            <h2><a href={`/topics/${article.slug}`}>{article.title}</a></h2>
+            <p class="topic-summary">{article.description}</p>
+            
+            <div class="recommended-strip">
+              <span>🎯 核心推荐品牌：</span>
+              <div class="brands-pills">
+                {article.recommendedBrands.map((b: { name: string; slug: string }) => (
+                  <a href={`/airports/${b.slug}`} class="b-pill">{b.name}</a>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <!-- Answer Block 预览 -->
+          <div class="hub-answer-block">
+            <strong>⚡ 核心即问即答提要：</strong>
+            <p>{article.answerBlock.answer}</p>
+          </div>
+
+          <div class="card-footer-action">
+            <span class="update-time">📅 更新时间：{article.dateModified} · 作者：{article.author}</span>
+            <a href={`/topics/${article.slug}`} class="button button-primary btn-sm">
+              进入阅读万字级完整深度研报
+              <Icon name="arrow-right" size={15} />
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .page-header-box {
+    padding-top: 3.5rem;
+    padding-bottom: 2rem;
+  }
+  .page-header-box h1 {
+    font-size: 2.75rem;
+    line-height: 1.2;
+    margin: 1rem 0;
+  }
+  .header-lead {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 780px;
+    line-height: 1.6;
+  }
+
+  .topics-container {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    margin-top: 1.5rem;
+  }
+  .topic-detail-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 2.5rem;
+    transition: all 0.2s ease;
+  }
+  .topic-detail-card:hover {
+    border-color: #7157ff;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+  }
+  .topic-meta-strip {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .topic-idx {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #7157ff;
+    text-transform: uppercase;
+  }
+  .role-badge, .read-badge {
+    font-size: 0.72rem;
+    color: var(--muted);
+    background: var(--paper-light);
+    border: 1px solid var(--line);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .topic-header h2 {
+    font-size: 1.75rem;
+    margin: 8px 0 12px 0;
+    line-height: 1.35;
+  }
+  .topic-header h2 a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .topic-header h2 a:hover {
+    color: #7157ff;
+  }
+  .topic-summary {
+    font-size: 0.96rem;
+    color: var(--muted);
+    line-height: 1.65;
+    margin-bottom: 16px;
+  }
+  .recommended-strip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--paper-light);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .brands-pills {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .b-pill {
+    background: rgba(113, 87, 255, 0.12);
+    color: #7157ff;
+    padding: 2px 10px;
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 0.78rem;
+    text-decoration: none;
+  }
+  .b-pill:hover {
+    background: #7157ff;
+    color: #fff;
+  }
+
+  .hub-answer-block {
+    background: rgba(113, 87, 255, 0.05);
+    border-left: 3px solid #7157ff;
+    padding: 14px 18px;
+    border-radius: 0 12px 12px 0;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+  .hub-answer-block strong {
+    color: #7157ff;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .hub-answer-block p {
+    margin: 0;
+    color: var(--ink-soft);
+  }
+
+  .card-footer-action {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--line);
+    padding-top: 18px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .update-time {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .btn-sm {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    min-height: 40px;
+  }
+
+  @media (max-width: 640px) {
+    .topic-detail-card {
+      padding: 1.5rem;
+    }
+  }
+</style>

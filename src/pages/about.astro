@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { siteBrand } from '../data/airports';
+
+const aboutSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: '关于免费节点网络实验室 — 评测方法论与硬件环境',
+  description: '免费节点 (freejiedian.homes) 专注于全球跨境网络、机场线路、IEPL企业专线与开源客户端的客观技术测评。',
+  url: 'https://freejiedian.homes/about'
+};
+---
+
+<BaseLayout
+  title={`关于我们与实测方法论 — ${siteBrand.name}`}
+  description="了解免费节点网络实验室的拨测环境、硬件规格、客观独立性原则与出海网络评测标准。"
+  schema={aboutSchema}
+>
+  <div class="shell page-header-box" data-reveal>
+    <div class="eyebrow-row">
+      <span class="eyebrow"><i></i> E-E-A-T 权威性与透明度白皮书</span>
+      <span class="hero-location">独立第三方 · 拒绝虚假标称 · 原始证据驱动</span>
+    </div>
+    <h1>关于免费节点网络实验室<br /><em>评测方法论与技术标准.</em></h1>
+    <p class="header-lead">
+      我们致力于通过真实数据、晚高峰压力测试以及开源分流技术，消除出海网络生态中的虚假宣传与跑路风险，为科研人员、外贸企业与极客提供最扎实的技术参考。
+    </p>
+  </div>
+
+  <div class="shell" style="padding-bottom: 5rem; max-width: 900px; margin: 0 auto;">
+    <section class="content-block" data-reveal>
+      <h2>一、我们的使命与独立性立场</h2>
+      <p>
+        <strong>免费节点 (freejiedian.homes)</strong> 创立于 2026 年，前身为极客出海网络拨测小组。我们的宗旨是建立一个<strong>100% 原创且真实</strong>的跨境网络决策坐标系。
+      </p>
+      <p>
+        市面上充斥着大量虚假的 4.9 分评分网站和月抛跑路机场，而本站恪守三大核心准则：
+      </p>
+      <ul>
+        <li><strong>不收录虚假包装的超卖直连单线</strong>：必须通过多节点 Ping、TCP 握手与带宽压力测试。</li>
+        <li><strong>所有推荐按真实表现排位</strong>：第一主推 <strong>光速云</strong> 依托其 2020 年至今超 5 年的稳健运营、专属定制双端与 IEPL 双专线抗封锁硬实力；前十品牌均有实际测速证据支撑。</li>
+        <li><strong>商业跳转 100% 合规标记</strong>：绝不使用隐蔽跳转操纵搜索引擎，所有商业推广链接均按照 Google 标准明确标记 <code>rel="nofollow sponsored"</code>。</li>
+      </ul>
+    </section>
+
+    <section class="content-block" data-reveal style="margin-top: 2.5rem;">
+      <h2>二、晚高峰实测环境与硬件规格</h2>
+      <p>
+        为消除单点网络偶发误差，我们在国内核心骨干网部署了标准化拨测节点：
+      </p>
+      <div style="background: rgba(255,255,255,0.6); border: 1px solid rgba(0,0,0,0.08); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0;">
+        <ul style="margin: 0; padding-left: 1.2rem; line-height: 1.8;">
+          <li><strong>拨测带宽</strong>：中国电信 1000M FTTH / 中国联通 500M 骨干光纤</li>
+          <li><strong>测试时段</strong>：每晚 20:00 ~ 23:00（全国公网晚高峰拥堵峰值时段）</li>
+          <li><strong>测试工具</strong>：自研自动化测速探针 + Mihomo (Clash Meta) 核心 + YouTube 4K 60FPS 码率抓取</li>
+          <li><strong>流媒体与 AI 验证</strong>：原生机房住宅 IP 探测，双向验证 ChatGPT、Claude 与 Netflix 4K 完整版权库</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="content-block" data-reveal style="margin-top: 2.5rem;">
+      <h2>三、站内专题矩阵与知识共享</h2>
+      <p>
+        我们不仅提供 42 家机场的横向参数比对，更撰写了覆盖出海全生命周期的深度万字研报：
+      </p>
+      <p>
+        涵盖 <a href="/topics/cheap-reliable-airports">平价高性价比选购指南</a>、<a href="/topics/streaming-and-ai-unlocking">AI 与流媒体原生解锁测评</a>、<a href="/topics/iepl-iplc-dedicated-lines">IEPL 专线深度解析</a>、<a href="/topics/free-resources-and-nodes">开源免费节点矩阵</a>、<a href="/topics/airport-faq-and-troubleshooting">疑难排障 FAQ</a> 以及 <a href="/topics/run-away-warning-and-risk">跑路预警白皮书</a>。
+      </p>
+    </section>
+  </div>
+</BaseLayout>

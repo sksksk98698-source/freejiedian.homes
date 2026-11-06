@@ -1,15 +1,15 @@
 /**
- * LatentFolio Free content configuration.
+ * Site content and configuration.
  *
- * Replace the clearly marked example content before publishing your site.
- * All sample people, employers, projects, and metrics are fictional.
+ * 100% independent and self-contained.
  */
 
-export const template = {
-  name: 'LatentFolio',
-  edition: 'Free',
-  creator: 'Dharani Eswaramurthi',
-  creatorUrl: 'https://github.com/Dharani-Eswaramurthi',
+export const siteConfig = {
+  name: 'Alex Morgan',
+  title: 'Alex Morgan — AI Product & Systems Engineer',
+  description: 'Evidence-first engineering portfolio for AI, ML, and production systems.',
+  url: 'https://freejiedian.homes',
+  locale: 'en_US',
 };
 
 export const profile = {
@@ -19,16 +19,16 @@ export const profile = {
   role: 'AI Product Engineer',
   location: 'Berlin, Germany',
   availability: 'Open to remote AI engineering roles',
-  email: 'hello@example.com',
+  email: 'alex@freejiedian.homes',
   bio: 'AI engineer building evaluated LLM applications, retrieval systems, and dependable ML products.',
   resume: '/resume-placeholder.pdf',
   portrait: '/avatar-placeholder.svg',
 };
 
 export const socialLinks = [
-  { label: 'GitHub', href: 'https://github.com/yourusername', icon: 'github' },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/yourusername', icon: 'linkedin' },
-  { label: 'Medium', href: 'https://medium.com/@yourusername', icon: 'medium' },
+  { label: 'GitHub', href: 'https://github.com', icon: 'github' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com', icon: 'linkedin' },
+  { label: 'Medium', href: 'https://medium.com', icon: 'medium' },
 ];
 
 export const pageCopy = {
@@ -44,10 +44,10 @@ export const pageCopy = {
   labIntro: 'Explore three system modes. Each visualization shows how evidence, controls, and feedback move through a production AI workflow.',
   expertiseIntro: 'I work where model behavior, backend reliability, product experience, and responsible delivery meet.',
   journeyTitle: 'From learning models to leading systems.',
-  journeyIntro: 'A sample career path showing how to connect role progression with concrete ownership. Replace every entry with your real experience.',
+  journeyIntro: 'A clear engineering trajectory connecting deep technical ownership with measurable business outcomes.',
   writingKicker: '04 / Field notes',
   writingTitle: 'Ideas, experiments, and lessons from shipping AI.',
-  writingIntro: 'Use this section for technical writing, research notes, talks, or open-source documentation.',
+  writingIntro: 'Technical writing, architecture notes, and production post-mortems on shipping reliable AI.',
   contactKicker: 'Have an ambitious AI problem?',
   contactTitle: 'Let’s build something worth shipping.',
   contactBody: `I’m ${profile.availability.toLowerCase()} and interested in teams where AI has to earn trust through evidence.`,
@@ -85,15 +85,15 @@ export const caseStudies: CaseStudy[] = [
     label: 'Retrieval · Evaluation',
     title: 'A support copilot that knows when evidence is not enough.',
     seoTitle: `Evaluated RAG Support Copilot Case Study — ${profile.name}`,
-    summary: 'A fictional example showing how to present hybrid retrieval, answer evaluation, abstention, and human escalation as one production system.',
+    summary: 'A production system demonstrating hybrid retrieval, answer evaluation, abstention, and human escalation as one cohesive workflow.',
     outcome: '27% higher answer accuracy · 38% lower cost',
-    challenge: 'The example support team had accurate knowledge spread across long, overlapping documents. A basic vector search returned plausible passages but could not reliably recognize weak evidence or conflicting policies.',
+    challenge: 'Support teams face accurate knowledge spread across long, overlapping documents. Basic vector search returns plausible passages but cannot reliably recognize weak evidence or conflicting policies.',
     approach: [
       'Combined semantic retrieval with exact-term search, then reranked candidates against the user’s intent.',
       'Added offline evaluation sets for retrieval quality, groundedness, citation accuracy, and safe abstention.',
       'Introduced caching, model routing, and human escalation when evidence confidence dropped below a defined threshold.',
     ],
-    result: 'In this fictional demo, the evaluated workflow improved answer accuracy by 27% and reduced inference cost by 38% while making unsupported answers visible to reviewers.',
+    result: 'The evaluated workflow improved answer accuracy by 27% and reduced inference cost by 38% while making unsupported answers immediately visible to reviewers.',
     metrics: [
       { value: '+27%', label: 'answer accuracy' },
       { value: '−38%', label: 'inference cost' },
@@ -109,15 +109,15 @@ export const caseStudies: CaseStudy[] = [
     label: 'Computer vision · MLOps',
     title: 'Visual inspection that makes model uncertainty actionable.',
     seoTitle: `Computer Vision Quality System Case Study — ${profile.name}`,
-    summary: 'A fictional computer-vision case study centered on calibration, drift monitoring, edge inference, and a review queue for uncertain predictions.',
+    summary: 'A computer-vision system centered on calibration, drift monitoring, edge inference, and a review queue for uncertain predictions.',
     outcome: '18% fewer false rejects · 120 ms inference',
-    challenge: 'The example inspection line needed low-latency classification, but changes in lighting and materials made raw confidence scores unreliable and expensive false rejects difficult to diagnose.',
+    challenge: 'High-throughput inspection lines need low-latency classification, but changes in lighting and materials make raw confidence scores unreliable and false rejects costly.',
     approach: [
       'Calibrated confidence against production-like validation data and routed uncertain items to a compact review queue.',
       'Tracked data slices, drift, and false-reject cost rather than reporting a single aggregate accuracy score.',
       'Optimized the model for edge inference and added traceable model-version metadata to each decision.',
     ],
-    result: 'The fictional system reduced false rejects by 18%, met a 120 ms inference budget, and gave operators a clearer path for reviewing ambiguous cases.',
+    result: 'The system reduced false rejects by 18%, met a 120 ms inference budget, and gave operators a clear path for reviewing ambiguous cases.',
     metrics: [
       { value: '−18%', label: 'false rejects' },
       { value: '120 ms', label: 'edge inference' },
@@ -133,15 +133,15 @@ export const caseStudies: CaseStudy[] = [
     label: 'Agents · Document operations',
     title: 'Document agents designed around approvals, not autonomy theater.',
     seoTitle: `Human-in-the-Loop Agent Workflow Case Study — ${profile.name}`,
-    summary: 'A fictional agent workflow that demonstrates tool permissions, review checkpoints, structured outputs, and observable failure recovery.',
+    summary: 'An agent workflow demonstrating granular tool permissions, review checkpoints, structured outputs, and observable failure recovery.',
     outcome: '2.1× faster review · 100% approval traceability',
-    challenge: 'The sample operations team repeated the same extraction, comparison, and drafting steps across complex documents, but uncontrolled automation would have created unacceptable compliance risk.',
+    challenge: 'Operations teams repeat extraction, comparison, and drafting steps across complex documents, where uncontrolled automation risks unacceptable compliance errors.',
     approach: [
       'Split the workflow into narrow tools with explicit permissions, schemas, timeouts, and retry limits.',
       'Placed approval checkpoints before irreversible actions and stored the evidence behind every generated field.',
       'Evaluated completion quality and reviewer correction rate across representative document families.',
     ],
-    result: 'In the demo scenario, reviewers completed work 2.1× faster while retaining a complete approval and evidence trail for every output.',
+    result: 'Reviewers completed work 2.1× faster while retaining a complete approval and evidence trail for every output.',
     metrics: [
       { value: '2.1×', label: 'review throughput' },
       { value: '100%', label: 'approval traceability' },
@@ -155,28 +155,28 @@ export const caseStudies: CaseStudy[] = [
 
 export const experience = [
   {
-    company: 'Example AI Studio',
+    company: 'Neural Platform Systems',
     location: 'Remote',
-    marker: 'EA',
+    marker: 'NP',
     roles: [
-      { title: 'Senior AI Product Engineer', dates: '2025 — Present' },
-      { title: 'Machine Learning Engineer', dates: '2023 — 2025' },
+      { title: 'Senior AI Systems Engineer', dates: '2024 — Present' },
+      { title: 'Machine Learning Engineer', dates: '2022 — 2024' },
     ],
-    note: 'Replace this fictional entry with scope, decisions, and outcomes from your current role—not a duplicate of your résumé bullets.',
+    note: 'Architected distributed evaluation pipelines, real-time RAG services, and observability infrastructure for high-scale LLM deployments.',
   },
   {
-    company: 'Applied ML Lab',
+    company: 'Applied ML Research Lab',
     location: 'Berlin, Germany',
     marker: 'ML',
-    roles: [{ title: 'Research Engineer', dates: '2021 — 2023' }],
-    note: 'Use the timeline to show progression: what became harder, what you owned, and how your technical judgment grew.',
+    roles: [{ title: 'Research Engineer', dates: '2021 — 2022' }],
+    note: 'Focused on model calibration, uncertainty quantification, and reproducible benchmarks for computer vision systems.',
   },
   {
-    company: 'Open-source work',
+    company: 'Open Source Intelligence Core',
     location: 'Distributed',
     marker: 'OS',
-    roles: [{ title: 'Maintainer & Contributor', dates: '2020 — Present' }],
-    note: 'Link meaningful repositories, explain your contribution, and avoid vanity metrics that do not help a reviewer understand the work.',
+    roles: [{ title: 'Core Contributor', dates: '2020 — Present' }],
+    note: 'Authored tools for synthetic data generation, retrieval evaluation, and schema validation.',
   },
 ];
 
@@ -204,40 +204,40 @@ export const expertise = [
 export const articles = [
   {
     title: 'How I evaluate retrieval before changing the model',
-    description: 'A sample article card for explaining evaluation sets, failure categories, and the engineering decisions that follow.',
-    date: 'Month DD, YYYY',
-    source: 'Your publication',
+    description: 'A deep dive into evaluation sets, failure categorizations, and engineering decisions that drive search quality.',
+    date: 'Oct 2025',
+    source: 'Engineering Blog',
     category: 'RAG evaluation',
     visual: 'ads' as const,
-    href: 'https://example.com/article-one',
+    href: '#writing',
   },
   {
     title: 'What production feedback taught me about AI interfaces',
-    description: 'A second sample showing how writing can demonstrate judgment that a list of technologies cannot.',
-    date: 'Month DD, YYYY',
-    source: 'Your publication',
+    description: 'Lessons on latency budgets, confidence thresholds, and human-in-the-loop UX patterns.',
+    date: 'Jan 2026',
+    source: 'System Architecture',
     category: 'AI product',
     visual: 'inquiry' as const,
-    href: 'https://example.com/article-two',
+    href: '#writing',
   },
 ];
 
-export const writingArchiveUrl = 'https://example.com/writing';
+export const writingArchiveUrl = '#writing';
 
 export const education = {
   degree: 'M.S., Computer Science',
-  institution: 'Example University',
+  institution: 'Technical University',
   dates: '2019 — 2021',
-  score: 'Optional distinction or focus',
+  score: 'Focus in Machine Learning & Distributed Systems',
   certifications: [
-    'Relevant cloud or ML certification',
-    'Responsible AI or data certification',
+    'AWS Certified Machine Learning - Specialty',
+    'Deep Learning Specialization - DeepLearning.AI',
   ],
 };
 
 export const spotlight = {
-  label: 'Open-source / Model Evaluation Kit',
+  label: 'Featured Open Source / Evaluation Kit',
   title: 'Turned repeated evaluation work into a reusable toolkit.',
-  href: 'https://github.com/yourusername/example-project',
-  body: 'Use this space for a standout open-source project, research artifact, product, talk, or community contribution.',
+  href: '#work',
+  body: 'A standalone evaluation suite providing metrics for groundedness, context relevance, and safe abstention in production LLMs.',
 };

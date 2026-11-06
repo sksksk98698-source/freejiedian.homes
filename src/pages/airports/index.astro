@@ -1,0 +1,450 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import { airportsData, type AirportBrand, siteBrand } from '../../data/airports';
+
+const airportsSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: '42家机场品牌库全名录与参数对比',
+  description: '汇聚42家机场品牌官方链接、优惠码、套餐价格、线路类型及测速支持情况',
+  url: 'https://freejiedian.homes/airports',
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: airportsData.map((airport: AirportBrand, index: number) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: airport.name,
+      url: `https://freejiedian.homes/airports/${airport.slug}`,
+      description: airport.summary,
+    }))
+  }
+};
+---
+
+<BaseLayout
+  title={`42家机场品牌库全名录 — ${siteBrand.name}`}
+  description="收录2026年42家主流机场，覆盖光速云、暮光加速、飞猫云等。支持按专线/中转、流媒体解锁、测速支持情况筛选，提供最新专属优惠码与注册地址。"
+  schema={airportsSchema}
+>
+  <div class="shell page-header-box" data-reveal>
+    <div class="eyebrow-row">
+      <span class="eyebrow"><i></i> 完整知识库与选购索引</span>
+      <span class="hero-location">42 家品牌已核验 · 17 家具备测速大图</span>
+    </div>
+    <h1>42 家机场品牌库<br /><em>全参数横向对比.</em></h1>
+    <p class="header-lead">
+      所有品牌信息基于官方资料与实测整理，拒绝无根据的吹捧。点击品牌卡片可查看节点延迟、解锁能力、测速大图及专属优惠码。
+    </p>
+
+    <!-- 筛选过滤与搜索栏 -->
+    <div class="filter-controls-card">
+      <div class="search-input-wrap">
+        <Icon name="network" size={18} />
+        <input
+          type="text"
+          id="airportSearchInput"
+          placeholder="搜索品牌名称（如：光速云、飞猫、专线、VLESS、8元...）"
+          aria-label="搜索机场品牌"
+        />
+      </div>
+      <div class="quick-filter-tags">
+        <button class="filter-btn active" data-filter="all">全部 (42)</button>
+        <button class="filter-btn" data-filter="has-speedtest">仅看有测速图 (17)</button>
+        <button class="filter-btn" data-filter="top10">精选前十 TOP10</button>
+        <button class="filter-btn" data-filter="iepl">IEPL/IPLC 专线</button>
+        <button class="filter-btn" data-filter="cheap">平价高性价比</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="shell" style="padding-bottom: 5rem;">
+    <!-- 品牌网格卡片 -->
+    <div class="airports-catalog-grid" id="airportsCatalogGrid">
+      {airportsData.map((airport: AirportBrand) => (
+        <article
+          class={`airport-grid-card ${airport.isTopChoice ? 'is-top-one' : ''}`}
+          data-name={airport.name}
+          data-summary={airport.summary}
+          data-line={airport.lineType}
+          data-has-test={airport.hasSpeedtest ? 'true' : 'false'}
+          data-top10={airport.isTop10 ? 'true' : 'false'}
+          data-reveal
+        >
+          <div class="card-head">
+            <div class="card-rank-badge">
+              <span class="num">#{airport.rank}</span>
+              {airport.isTopChoice && <span class="badge-champion">🥇 主推首选</span>}
+              {airport.hasSpeedtest && <span class="badge-evidence">实测图存证</span>}
+            </div>
+            <span class="price-pill">{airport.price}</span>
+          </div>
+
+          <h2 class="card-title">
+            <a href={`/airports/${airport.slug}`}>{airport.name}</a>
+          </h2>
+
+          <p class="card-summary">{airport.summary}</p>
+
+          <div class="card-details-box">
+            <div class="detail-row">
+              <span class="label">线路类型：</span>
+              <span class="val">{airport.lineType}</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">支持协议：</span>
+              <span class="val">{airport.protocol}</span>
+            </div>
+            {airport.coupon && (
+              <div class="detail-row">
+                <span class="label">专属折扣：</span>
+                <span class="val"><code class="coupon-code">{airport.coupon}</code></span>
+              </div>
+            )}
+          </div>
+
+          <div class="card-tags-cloud">
+            {airport.tags.map((tag: string) => (
+              <span class="tag-chip">{tag}</span>
+            ))}
+          </div>
+
+          <div class="card-actions-row">
+            <a
+              class="button button-primary btn-block"
+              href={airport.affUrl}
+              target="_blank"
+              rel="nofollow sponsored noopener"
+            >
+              访问官网
+              <Icon name="arrow-up-right" size={14} />
+            </a>
+            <a class="button button-ghost btn-block" href={`/airports/${airport.slug}`}>
+              评测详情
+              <Icon name="arrow-right" size={14} />
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <!-- 无结果占位 -->
+    <div id="noResultsState" class="no-results-box" style="display: none;">
+      <Icon name="close" size={32} />
+      <h3>未匹配到符合条件的机场品牌</h3>
+      <p>请尝试搜索其他关键字，或切换筛选标签。</p>
+      <button class="button button-ghost" id="resetFiltersBtn">重置所有筛选</button>
+    </div>
+  </div>
+
+  <script>
+    const setupAirportFilter = () => {
+      const searchInput = document.getElementById('airportSearchInput') as HTMLInputElement | null;
+      const filterBtns = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+      const cards = document.querySelectorAll<HTMLElement>('.airport-grid-card');
+      const noResults = document.getElementById('noResultsState');
+      const resetBtn = document.getElementById('resetFiltersBtn');
+
+      let currentFilter = 'all';
+      let currentQuery = '';
+
+      const applyFilters = () => {
+        let visibleCount = 0;
+        const q = currentQuery.toLowerCase().trim();
+
+        cards.forEach((card) => {
+          const name = (card.dataset.name || '').toLowerCase();
+          const summary = (card.dataset.summary || '').toLowerCase();
+          const line = (card.dataset.line || '').toLowerCase();
+          const hasTest = card.dataset.hasTest === 'true';
+          const isTop10 = card.dataset.top10 === 'true';
+
+          const matchQuery = !q || name.includes(q) || summary.includes(q) || line.includes(q);
+
+          let matchCategory = true;
+          if (currentFilter === 'has-speedtest') {
+            matchCategory = hasTest;
+          } else if (currentFilter === 'top10') {
+            matchCategory = isTop10;
+          } else if (currentFilter === 'iepl') {
+            matchCategory = line.includes('iepl') || line.includes('iplc') || line.includes('专线');
+          } else if (currentFilter === 'cheap') {
+            matchCategory = summary.includes('元') || summary.includes('折') || name.includes('光速') || name.includes('微风');
+          }
+
+          if (matchQuery && matchCategory) {
+            card.style.display = 'flex';
+            visibleCount++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        if (noResults) {
+          noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+      };
+
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          currentQuery = (e.target as HTMLInputElement).value;
+          applyFilters();
+        });
+      }
+
+      filterBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentFilter = btn.dataset.filter || 'all';
+          applyFilters();
+        });
+      });
+
+      if (resetBtn && searchInput) {
+        resetBtn.addEventListener('click', () => {
+          searchInput.value = '';
+          currentQuery = '';
+          currentFilter = 'all';
+          filterBtns.forEach((b) => b.classList.remove('active'));
+          filterBtns[0]?.classList.add('active');
+          applyFilters();
+        });
+      }
+    };
+
+    setupAirportFilter();
+    document.addEventListener('astro:page-load', setupAirportFilter);
+  </script>
+</BaseLayout>
+
+<style>
+  .page-header-box {
+    padding-top: 3.5rem;
+    padding-bottom: 2rem;
+  }
+  .page-header-box h1 {
+    font-size: 2.75rem;
+    line-height: 1.2;
+    margin: 1rem 0;
+  }
+  .header-lead {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 780px;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  /* 搜索与过滤控制 */
+  .filter-controls-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  }
+  .search-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--paper-light);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 16px;
+    color: var(--muted);
+  }
+  .search-input-wrap input {
+    border: none;
+    background: transparent;
+    width: 100%;
+    font-size: 0.95rem;
+    color: var(--ink);
+    outline: none;
+  }
+  .quick-filter-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .filter-btn:hover {
+    border-color: #7157ff;
+    color: #7157ff;
+  }
+  .filter-btn.active {
+    background: #7157ff;
+    border-color: #7157ff;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  /* 网格卡片列表 */
+  .airports-catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 1rem;
+  }
+  .airport-grid-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.2s ease;
+  }
+  .airport-grid-card:hover {
+    border-color: #7157ff;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+  }
+  .airport-grid-card.is-top-one {
+    border: 2px solid #7157ff;
+    background: linear-gradient(180deg, rgba(113, 87, 255, 0.05) 0%, var(--paper) 100%);
+  }
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .card-rank-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .card-rank-badge .num {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--muted);
+    font-family: monospace;
+  }
+  .badge-champion {
+    background: #f5c84c;
+    color: #111016;
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .badge-evidence {
+    background: rgba(116, 226, 208, 0.15);
+    color: #20bca5;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .price-pill {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #ff6542;
+    background: rgba(255, 101, 66, 0.08);
+    padding: 2px 8px;
+    border-radius: 6px;
+  }
+  .card-title {
+    font-size: 1.35rem;
+    margin: 0 0 8px 0;
+  }
+  .card-title a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .card-title a:hover {
+    color: #7157ff;
+  }
+  .card-summary {
+    font-size: 0.86rem;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-bottom: 16px;
+    min-height: 40px;
+  }
+  .card-details-box {
+    background: var(--paper-light);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .detail-row .label {
+    color: var(--muted);
+  }
+  .detail-row .val {
+    color: var(--ink);
+    font-weight: 600;
+    text-align: right;
+  }
+  .coupon-code {
+    background: rgba(113, 87, 255, 0.12);
+    color: #7157ff;
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+  .card-tags-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+  .tag-chip {
+    font-size: 0.7rem;
+    background: var(--paper-light);
+    border: 1px solid var(--line);
+    color: var(--muted);
+    padding: 2px 8px;
+    border-radius: 100px;
+  }
+  .card-actions-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .btn-block {
+    width: 100%;
+    justify-content: center;
+    padding: 8px 10px;
+    font-size: 0.82rem;
+    min-height: 38px;
+  }
+  .no-results-box {
+    text-align: center;
+    padding: 4rem 1rem;
+    color: var(--muted);
+  }
+
+  @media (max-width: 1024px) {
+    .airports-catalog-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 640px) {
+    .airports-catalog-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

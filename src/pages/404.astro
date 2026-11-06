@@ -1,14 +1,15 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
+import { profile } from '../data/site';
 ---
 
-<BaseLayout title="Page not found — LatentFolio" description="This route wandered outside the graph." noindex>
+<BaseLayout title={`Page Not Found — ${profile.name}`} description="The requested route could not be found." noindex>
   <section class="not-found shell">
     <div class="not-found-code" aria-hidden="true"><span>4</span><i></i><span>4</span></div>
     <span class="section-kicker">Retrieval returned no matching route</span>
     <h1>This page fell out<br />of the <em>context window.</em></h1>
-    <p>The good news: the rest of the portfolio is still grounded.</p>
+    <p>The requested URL does not exist or has been relocated.</p>
     <a class="button button-primary" href="/">Return home <Icon name="arrow-right" size={17} /></a>
   </section>
 </BaseLayout>

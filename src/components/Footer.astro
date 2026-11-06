@@ -1,29 +1,32 @@
 ---
 import Icon from './Icon.astro';
-import { profile, socialLinks, template } from '../data/site';
+import { siteBrand } from '../data/airports';
 const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
   <div class="shell footer-main">
     <div>
-      <a class="footer-brand" href="/">{profile.shortName} <span>×</span> AI</a>
-      <p>Engineering intelligence.<br />Showing the evidence.</p>
+      <a class="footer-brand" href="/">{siteBrand.name} <span>×</span> {siteBrand.domain}</a>
+      <p>全球高速节点与优质机场实测导航平台<br />去伪存真 · 数据驱动 · 晚高峰实测证据链</p>
+      <small style="color: var(--muted); display: block; margin-top: 12px; font-size: 0.78rem; line-height: 1.6;">
+        ⚖️ 合规声明：本站包含推广链接，通过链接注册可能为本站带来推荐佣金，绝不影响用户实际支付价格与折扣权益。测速截图代表特定环境与测试时间点结果，不作为对未来可用性的绝对承诺。请遵守当地法律法规。
+      </small>
     </div>
     <div class="footer-links">
-      <span class="footer-label">Find me online</span>
-      {socialLinks.map((link) => (
-        <a href={link.href} target="_blank" rel="noreferrer">
-          {link.label}
-          <Icon name="arrow-up-right" size={15} />
-        </a>
-      ))}
-      <a href={`mailto:${profile.email}`}>Email <Icon name="arrow-up-right" size={15} /></a>
+      <span class="footer-label">快速导航</span>
+      <a href="/airports">42家机场品牌库 <Icon name="arrow-up-right" size={15} /></a>
+      <a href="/speedtest">测速证据实验室 <Icon name="arrow-up-right" size={15} /></a>
+      <a href="/clients">客户端下载大全 <Icon name="arrow-up-right" size={15} /></a>
+      <a href="/topics">深度选购专题 <Icon name="arrow-up-right" size={15} /></a>
+      <a href="/about">关于实验室 & 方法论 <Icon name="arrow-up-right" size={15} /></a>
+      <a href="/disclaimer">免责合规声明 <Icon name="arrow-up-right" size={15} /></a>
+      <a href="/airports/guangsu">主推：光速云深度评测 <Icon name="arrow-up-right" size={15} /></a>
     </div>
   </div>
   <div class="shell footer-bottom">
-    <span>© {year} {profile.name}</span>
-    <a href={template.creatorUrl} target="_blank" rel="noreferrer">{template.name} by {template.creator}</a>
-    <a href="#top">Back to top ↑</a>
+    <span>© {year} {siteBrand.domain} ({siteBrand.name}). 100% 独立实测保留版权.</span>
+    <span>SLA 99.9% 晚高峰节点监控体系</span>
+    <a href="#top">返回顶部 ↑</a>
   </div>
 </footer>

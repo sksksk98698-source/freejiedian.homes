@@ -1,0 +1,261 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { clientsData } from '../data/clients';
+import { siteBrand } from '../data/airports';
+
+const clientsSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: '2026主流代理客户端官方下载大全',
+  description: '整理Windows、Android、iOS及macOS主流代理客户端下载地址，包含Clash Verge Rev、v2rayN、Shadowrocket小火箭等权威项目源与新手教程。',
+  url: 'https://freejiedian.homes/clients'
+};
+
+const platforms = ['Windows', 'Android', 'iOS', 'macOS'] as const;
+---
+
+<BaseLayout
+  title={`2026代理客户端下载大全 — Clash Verge Rev、v2rayN、小火箭【免费节点】`}
+  description="汇集Windows电脑、安卓手机、苹果iPhone与Mac全平台代理软件下载：包含Clash Verge Rev、v2rayNG、Shadowrocket（小火箭）、Stash等官方开源发布源。"
+  schema={clientsSchema}
+>
+  <div class="shell page-header-box" data-reveal>
+    <div class="eyebrow-row">
+      <span class="eyebrow"><i></i> 全平台出海软件索引</span>
+      <span class="hero-location">权威项目源 · 拒绝第三方修改版 · 安全纯净</span>
+    </div>
+    <h1>2026 代理客户端大全<br /><em>官方下载与分流指南.</em></h1>
+    <p class="header-lead">
+      获取优质机场订阅后，选择一款称心如意的客户端至关重要。本站为您整理了四大主流操作系统的核心开源项目与官方下载渠道，助您轻松一键导入订阅。
+    </p>
+  </div>
+
+  <div class="shell" style="padding-bottom: 5rem;">
+    {platforms.map((platform) => {
+      const list = clientsData.filter((c) => c.platform === platform);
+      return (
+        <section class="platform-section" data-reveal>
+          <div class="platform-header">
+            <h2>{platform} 平台客户端推荐</h2>
+            <span class="platform-count">共收录 {list.length} 款主流工具</span>
+          </div>
+
+          <div class="clients-cards-grid">
+            {list.map((client) => (
+              <article class={`client-item-card ${client.recommended ? 'is-recommended' : ''}`}>
+                <div class="client-head">
+                  <div>
+                    <span class="client-tag">{client.tag}</span>
+                    <h3>{client.name}</h3>
+                  </div>
+                  <span class="kernel-pill">{client.kernel}</span>
+                </div>
+
+                <p class="client-features-text">{client.features}</p>
+
+                <div class="client-footer">
+                  <span class="source-info">来源：{client.source}</span>
+                  <a
+                    class="button button-primary btn-client-dl"
+                    href={client.downloadUrl}
+                    target="_blank"
+                    rel="nofollow noopener noreferrer"
+                  >
+                    前往下载
+                    <Icon name="arrow-up-right" size={14} />
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      );
+    })}
+
+    <!-- 新手订阅导入小教程 -->
+    <section class="tutorial-card" data-reveal>
+      <h2>📖 机场订阅快速导入通用步骤</h2>
+      <div class="tutorial-steps-grid">
+        <div class="step-box">
+          <span class="step-num">01</span>
+          <h4>注册并获取订阅</h4>
+          <p>在 <a href="/airports">机场品牌库</a> 选择心仪机场（如第一主推光速云），登录后台点击「一键导入」或复制「订阅链接」。</p>
+        </div>
+        <div class="step-box">
+          <span class="step-num">02</span>
+          <h4>粘贴至客户端</h4>
+          <p>打开下载好的客户端（如 Clash Verge 或小火箭），进入「订阅/配置」界面，粘贴链接并点击下载保存。</p>
+        </div>
+        <div class="step-box">
+          <span class="step-num">03</span>
+          <h4>选择节点开启代理</h4>
+          <p>勾选「规则模式（Rule）」，在节点列表中选择延迟较低的香港/日本/新加坡专线，开启系统代理开关即可畅快畅游。</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .page-header-box {
+    padding-top: 3.5rem;
+    padding-bottom: 2rem;
+  }
+  .page-header-box h1 {
+    font-size: 2.75rem;
+    line-height: 1.2;
+    margin: 1rem 0;
+  }
+  .header-lead {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 780px;
+    line-height: 1.6;
+  }
+
+  .platform-section {
+    margin-bottom: 3.5rem;
+  }
+  .platform-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+  }
+  .platform-header h2 {
+    font-size: 1.6rem;
+    margin: 0;
+  }
+  .platform-count {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .clients-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+  }
+  .client-item-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+    transition: all 0.2s ease;
+  }
+  .client-item-card:hover {
+    border-color: #7157ff;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
+  }
+  .client-item-card.is-recommended {
+    border-color: rgba(113, 87, 255, 0.4);
+    background: linear-gradient(180deg, rgba(113, 87, 255, 0.03) 0%, var(--paper) 100%);
+  }
+  .client-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .client-tag {
+    font-size: 0.68rem;
+    color: #7157ff;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .client-head h3 {
+    margin: 4px 0 0 0;
+    font-size: 1.25rem;
+  }
+  .kernel-pill {
+    background: var(--paper-light);
+    border: 1px solid var(--line);
+    font-size: 0.72rem;
+    padding: 3px 8px;
+    border-radius: 6px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .client-features-text {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+  .client-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--line);
+    padding-top: 14px;
+  }
+  .source-info {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .btn-client-dl {
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    min-height: 36px;
+  }
+
+  /* 教程板块 */
+  .tutorial-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 2.5rem;
+    margin-top: 2rem;
+  }
+  .tutorial-card h2 {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.6rem;
+  }
+  .tutorial-steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .step-box {
+    background: var(--paper-light);
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .step-num {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #7157ff;
+    font-family: monospace;
+  }
+  .step-box h4 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+  .step-box p {
+    margin: 0;
+    font-size: 0.86rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .step-box a {
+    color: #7157ff;
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .tutorial-steps-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,51 +1,68 @@
 ---
 import Icon from './Icon.astro';
-import { profile } from '../data/site';
+import { siteBrand } from '../data/airports';
 
 const pathname = Astro.url.pathname;
 const isHome = pathname === '/';
+
 const nav = [
-  { label: 'Work', href: isHome ? '#work' : '/#work' },
-  { label: 'Writing', href: isHome ? '#writing' : '/#writing' },
-  { label: 'About', href: isHome ? '#about' : '/#about' },
+  { label: 'TOP10 精选榜', href: isHome ? '#top10' : '/#top10' },
+  { label: '42家机场品牌库', href: '/airports' },
+  { label: '实测证据实验室', href: '/speedtest' },
+  { label: '客户端大全', href: '/clients' },
+  { label: '专题矩阵', href: '/topics' },
 ];
 ---
 
 <header class="site-header" data-header>
   <div class="header-inner shell">
-    <a class="brand" href="/">
-        <span class="brand-mark" aria-hidden="true">{profile.initials.slice(0, 1)}</span>
-        <span class="brand-copy">
-        <strong>{profile.shortName}</strong>
-        <small>{profile.role}</small>
+    <a class="brand" href="/" aria-label="免费节点 首页">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="22" height="22" fill="none">
+          <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2.2" stroke-dasharray="4 2"/>
+          <path d="M10 16 L22 16 M16 10 L22 16 L16 22" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span class="brand-copy">
+        <strong>{siteBrand.name}</strong>
+        <small>{siteBrand.domain}</small>
       </span>
     </a>
 
-    <nav class="desktop-nav" aria-label="Primary navigation">
-      {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+    <nav class="desktop-nav" aria-label="主要导航">
+      {nav.map((item) => (
+        <a href={item.href} class={pathname === item.href ? 'active' : ''}>
+          {item.label}
+        </a>
+      ))}
     </nav>
 
     <div class="header-actions">
-      <button class="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false" title="Switch to dark theme" data-theme-toggle>
+      <button class="theme-toggle" type="button" aria-label="切换浅色/深色主题" aria-pressed="false" title="切换显示主题" data-theme-toggle>
         <span class="theme-icon theme-icon-sun"><Icon name="sun" size={17} /></span>
         <span class="theme-icon theme-icon-moon"><Icon name="moon" size={17} /></span>
       </button>
-      <a class="header-cta" href={`mailto:${profile.email}`}>
-        Let's talk
+      <a class="header-cta" href="/airports" title="浏览全部42家机场品牌库">
+        <span>全库检索</span>
         <Icon name="arrow-up-right" size={16} />
       </a>
     </div>
 
-    <button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-nav" data-nav-toggle>
+    <button class="nav-toggle" type="button" aria-label="打开移动导航" aria-expanded="false" aria-controls="mobile-nav" data-nav-toggle>
       <span class="nav-open"><Icon name="menu" /></span>
       <span class="nav-close"><Icon name="close" /></span>
     </button>
   </div>
 
-  <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation" data-mobile-nav inert>
+  <nav class="mobile-nav" id="mobile-nav" aria-label="移动端导航" data-mobile-nav inert>
     <div class="shell">
-      {nav.map((item, index) => <a href={item.href}><span>0{index + 1}</span>{item.label}</a>)}
-      <a class="mobile-contact" href={`mailto:${profile.email}`}>Start a conversation <Icon name="arrow-up-right" /></a>
+      {nav.map((item, index) => (
+        <a href={item.href}>
+          <span>0{index + 1}</span>
+          {item.label}
+        </a>
+      ))}
+      <a class="mobile-contact" href="/airports">查看 42 家机场完整对比表 <Icon name="arrow-up-right" /></a>
     </div>
   </nav>
 </header>
@@ -61,7 +78,7 @@ const nav = [
     const close = () => {
       header.classList.remove('menu-open');
       toggle.setAttribute('aria-expanded', 'false');
-      toggle.setAttribute('aria-label', 'Open navigation');
+      toggle.setAttribute('aria-label', '打开导航');
       mobileNav.inert = true;
       document.body.classList.remove('nav-locked');
     };
@@ -70,14 +87,14 @@ const nav = [
       const willOpen = !header.classList.contains('menu-open');
       if (!willOpen) {
         close();
-        return;
+      } else {
+        header.classList.add('menu-open');
+        toggle.setAttribute('aria-expanded', 'true');
+        toggle.setAttribute('aria-label', '关闭导航');
+        mobileNav.inert = false;
+        document.body.classList.add('nav-locked');
+        requestAnimationFrame(() => mobileNav.querySelector<HTMLAnchorElement>('a')?.focus());
       }
-      header.classList.add('menu-open');
-      toggle.setAttribute('aria-expanded', 'true');
-      toggle.setAttribute('aria-label', 'Close navigation');
-      mobileNav.inert = false;
-      document.body.classList.add('nav-locked');
-      requestAnimationFrame(() => mobileNav.querySelector<HTMLAnchorElement>('a')?.focus());
     });
 
     mobileNav.querySelectorAll('a').forEach((link) => link.addEventListener('click', close));
@@ -99,7 +116,7 @@ const nav = [
 
       const updateLabel = () => {
         const isDark = document.documentElement.dataset.theme === 'dark';
-        const label = isDark ? 'Switch to light theme' : 'Switch to dark theme';
+        const label = isDark ? '切换至浅色模式' : '切换至深色模式';
         toggle.setAttribute('aria-label', label);
         toggle.setAttribute('title', label);
         toggle.setAttribute('aria-pressed', String(isDark));
@@ -111,7 +128,7 @@ const nav = [
       toggle.addEventListener('click', () => {
         const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
         document.documentElement.dataset.theme = nextTheme;
-        try { localStorage.setItem('latentfolio-theme', nextTheme); } catch {}
+        try { localStorage.setItem('site-theme', nextTheme); } catch {}
         updateLabel();
       });
 
